@@ -61,6 +61,22 @@ int main() {
     unsigned char *output = malloc(stride * height);
     memcpy(output, pixels, stride * height);
 
+    // Conversão para tons de cinza
+    #pragma omp parallel for
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int index = y * stride + x * 3;
+            int r = pixels[index];
+            int g = pixels[index + 1];
+            int b = pixels[index + 2];
+    
+            int gray = (r + g + b) / 3;
+            pixels[index] = gray;
+            pixels[index + 1] = gray;
+            pixels[index + 2] = gray;
+        }
+    }
+
     #pragma omp parallel for
     for (int y = 1; y < height - 1; ++y) {
         for (int x = 1; x < width - 1; ++x) {
